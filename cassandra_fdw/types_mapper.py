@@ -4,6 +4,7 @@ import uuid
 import json
 import cassandra_fdw.cassandra_types as cassandra_types
 from cassandra_fdw.cassandra_types import CqlType
+from cassandra.cqltypes import long
 from decimal import Decimal
 
 
@@ -89,7 +90,7 @@ def map_object_to_type(obj, cql_type):
         cassandra_types.cql_int: lambda: obj if obj is int else int(str(obj)),
         cassandra_types.cql_timestamp: lambda: time_utils.parse_date_string(str(obj)),
         cassandra_types.cql_timeuuid: lambda: obj if obj is uuid.UUID else uuid.UUID(str(obj)),
-        cassandra_types.cql_text: lambda: obj if obj is strh else obj.encode('utf8'),
+        cassandra_types.cql_text: lambda: obj if obj is str else obj.encode('utf8'),
         cassandra_types.cql_inet: lambda: str(obj),
         cassandra_types.cql_counter: lambda: obj if obj is long else long(str(obj)),
         cassandra_types.cql_varint: lambda: obj if obj is int else int(str(obj)),
