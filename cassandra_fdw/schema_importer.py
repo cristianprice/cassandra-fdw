@@ -7,9 +7,14 @@ import cassandra_fdw.logger as logger
 from cassandra_fdw.logger import WARNING, ERROR
 from cassandra_fdw.properties import ISDEBUG
 
+
 def import_schema(schema, srv_options, options, restriction_type, restricts):
     if ISDEBUG:
-        logger.log(u"import schema {0} requiested with options {1}; restriction type: {2}; restrictions: {3}".format(schema, options, restriction_type, restricts))
+        logger.log(
+            u"import schema {0} requiested with options {1}; restriction type: {2}; restrictions: {3}".format(schema,
+                                                                                                              options,
+                                                                                                              restriction_type,
+                                                                                                              restricts))
     if "hosts" not in srv_options:
         logger.log("The hosts parameter is needed, setting to localhost.", WARNING)
     hosts = srv_options.get("hosts", "localhost").split(",")
@@ -32,7 +37,7 @@ def import_schema(schema, srv_options, options, restriction_type, restricts):
         mapping_dict_backward[value] = key
 
     cluster = Cluster(hosts)
-    if(username is not None):
+    if (username is not None):
         cluster.auth_provider = PlainTextAuthProvider(username=username, password=password)
     # Cassandra connection init
     session = cluster.connect()
@@ -69,7 +74,9 @@ def import_schema(schema, srv_options, options, restriction_type, restricts):
         pg_table_name = c_table.name
         if pg_table_name in mapping_dict:
             if ISDEBUG:
-                logger.log("Cassandra table name '{0}' maps to PostgreSQL table name '{1}'".format(pg_table_name, mapping_dict[pg_table_name]))
+                logger.log("Cassandra table name '{0}' maps to PostgreSQL table name '{1}'".format(pg_table_name,
+                                                                                                   mapping_dict[
+                                                                                                       pg_table_name]))
             pg_table_name = mapping_dict[pg_table_name]
         pg_table = TableDefinition(pg_table_name)
         pg_table.options['keyspace'] = schema
@@ -78,7 +85,8 @@ def import_schema(schema, srv_options, options, restriction_type, restricts):
             cql_type = c_table.columns[c_column_name].cql_type
             pg_type = types_mapper.get_pg_type(cql_type)
             if ISDEBUG:
-                logger.log("Adding column {0} with PostgreSQL type {2} (CQL type {1})".format(c_column_name, cql_type, pg_type))
+                logger.log("Adding column {0} with PostgreSQL type {2} (CQL type {1})".format(c_column_name, cql_type,
+                                                                                              pg_type))
             pg_table.columns.append(ColumnDefinition(c_column_name, type_name=pg_type))
         if with_row_id:
             pg_table.columns.append(ColumnDefinition('__rowid__', type_name='text'))

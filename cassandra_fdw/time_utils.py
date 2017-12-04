@@ -1,6 +1,7 @@
 from datetime import datetime, date, time, timedelta
 from io import StringIO
 
+
 def parse_time_string(str_time):
     mode = 1
     idx = str_time.find('+')
@@ -29,6 +30,7 @@ def parse_time_string(str_time):
     tz_time = get_tz_time(tz_string)
     return (dt - timedelta(hours=tz_time['hours'] * mode, minutes=tz_time['minutes'] * mode)).time()
 
+
 def parse_date_string(str_date):
     year = 0
     month = 0
@@ -44,7 +46,7 @@ def parse_date_string(str_date):
     for c in str_date:
         if c == ' ' and state != 2:
             continue
-        #parse year
+        # parse year
         if state == 0:
             if c != '-':
                 file_str.write(c)
@@ -53,7 +55,7 @@ def parse_date_string(str_date):
                 file_str.close()
                 file_str = StringIO()
                 state += 1
-        #parse month
+        # parse month
         elif state == 1:
             if c != '-':
                 file_str.write(c)
@@ -62,7 +64,7 @@ def parse_date_string(str_date):
                 file_str.close()
                 file_str = StringIO()
                 state += 1
-        #parse day
+        # parse day
         elif state == 2:
             if c != ' ':
                 file_str.write(c)
@@ -71,7 +73,7 @@ def parse_date_string(str_date):
                 file_str.close()
                 file_str = StringIO()
                 state += 1
-        #parse hour
+        # parse hour
         elif state == 3:
             if c != ':':
                 file_str.write(c)
@@ -80,7 +82,7 @@ def parse_date_string(str_date):
                 file_str.close()
                 file_str = StringIO()
                 state += 1
-        #parse minute
+        # parse minute
         elif state == 4:
             if c != ':':
                 file_str.write(c)
@@ -89,7 +91,7 @@ def parse_date_string(str_date):
                 file_str.close()
                 file_str = StringIO()
                 state += 1
-        #parse second
+        # parse second
         elif state == 5:
             if c != '.' and c != '+' and c != '-':
                 file_str.write(c)
@@ -140,6 +142,7 @@ def parse_date_string(str_date):
     if tz_hour == 0 and tz_minute == 0:
         return dt
     return dt - timedelta(hours=tz_hour * tzmode, minutes=tz_minute * tzmode)
+
 
 def get_tz_time(str_tz_time):
     parts = str_tz_time.split(u':')

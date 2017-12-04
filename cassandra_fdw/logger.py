@@ -5,6 +5,6 @@ WARNING = WARNING
 DEBUG = DEBUG
 INFO = INFO
 
+
 def log(message, level=INFO, hint=None, detail=None):
     log_to_postgres(message, level, hint, detail)
-    

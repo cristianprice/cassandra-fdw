@@ -23,6 +23,7 @@ cql_uuid = 21
 cql_varint = 22
 cql_ascii = 23
 
+
 class CqlType:
     def __init__(self, main_type, sub_types):
         self.main_type = main_type
