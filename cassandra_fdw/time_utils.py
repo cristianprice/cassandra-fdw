@@ -1,5 +1,5 @@
 from datetime import datetime, date, time, timedelta
-from cStringIO import StringIO
+from io import StringIO
 
 def parse_time_string(str_time):
     mode = 1
@@ -16,7 +16,7 @@ def parse_time_string(str_time):
         else:
             time_string = str_time
             tz_string = None
-    
+
     format = '%H:%M:%S'
     idx = time_string.find('.')
     if idx >= 0:
@@ -45,7 +45,7 @@ def parse_date_string(str_date):
         if c == ' ' and state != 2:
             continue
         #parse year
-        if state == 0: 
+        if state == 0:
             if c != '-':
                 file_str.write(c)
             else:
@@ -113,7 +113,7 @@ def parse_date_string(str_date):
                     state += 1
         elif state == 7:
             file_str.write(c)
-    
+
     tzmode = 1
     if state == 2:
         day = int(file_str.getvalue())
@@ -130,7 +130,7 @@ def parse_date_string(str_date):
         tz_minute = tztime['minutes']
     else:
         raise ValueError('incorrect datetime format')
-    
+
     if year == 0 or month == 0 or day == 0:
         raise ValueError('incorrect datetime format')
 

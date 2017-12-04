@@ -1,9 +1,11 @@
 from multicorn import ForeignDataWrapper
-from cassandra_provider import CassandraProvider
-from properties import ISDEBUG
-import properties
-import schema_importer
+from cassandra_fdw.cassandra_provider import CassandraProvider
+from cassandra_fdw.properties import ISDEBUG
+import cassandra_fdw.properties as properties
+import cassandra_fdw.schema_importer as schema_importer
+import cassandra_fdw.logger as logger
 import time
+
 
 class CassandraFDW(ForeignDataWrapper):
 
@@ -13,7 +15,8 @@ class CassandraFDW(ForeignDataWrapper):
         self.init_columns = columns
         self.cassandra_provider = None
         self.concurency_level = int(options.get('modify_concurency', properties.DEFAULT_CONCURENCY_LEVEL))
-        self.per_transaction_connection = options.get('per_transaction_connection', properties.PER_TRANSACTION_CONNECTION) == 'True'
+        self.per_transaction_connection = options.get('per_transaction_connection',
+                                                      properties.PER_TRANSACTION_CONNECTION) == 'True'
         self.modify_items = []
 
     def build_cassandra_provider(self):
@@ -38,7 +41,7 @@ class CassandraFDW(ForeignDataWrapper):
             self.modify_items.append(('delete', rowid))
             if len(self.modify_items) >= properties.BATCH_MODIFY_THRESHOLD:
                 self.end_modify()
-            return { }
+            return {}
         else:
             return self.cassandra_provider.delete(rowid)
 
@@ -85,7 +88,8 @@ class CassandraFDW(ForeignDataWrapper):
             pass
 
     def explain(self, quals, columns, sortkeys=None, verbose=False):
-        return self.cassandra_provider.build_select_stmt(quals, columns, self.cassandra_provider.allow_filtering, verbose)
+        return self.cassandra_provider.build_select_stmt(quals, columns, self.cassandra_provider.allow_filtering,
+                                                         verbose)
 
     def end_scan(self):
         if ISDEBUG:

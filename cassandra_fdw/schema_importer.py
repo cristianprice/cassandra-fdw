@@ -2,10 +2,10 @@ from cassandra.metadata import Metadata
 from cassandra.cluster import Cluster
 from multicorn import TableDefinition, ColumnDefinition
 from cassandra.auth import PlainTextAuthProvider
-import types_mapper
-import logger
-from logger import WARNING, ERROR
-from properties import ISDEBUG
+import cassandra_fdw.types_mapper as types_mapper
+import cassandra_fdw.logger as logger
+from cassandra_fdw.logger import WARNING, ERROR
+from cassandra_fdw.properties import ISDEBUG
 
 def import_schema(schema, srv_options, options, restriction_type, restricts):
     if ISDEBUG:
@@ -48,7 +48,7 @@ def import_schema(schema, srv_options, options, restriction_type, restricts):
                 cassandra_tables.append(views[t])
     elif restriction_type == 'limit':
         for r in restricts:
-            t_name = r 
+            t_name = r
             if t_name in mapping_dict_backward:
                 t_name = mapping_dict_backward[t_name]
             if t_name in tables:
